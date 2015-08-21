@@ -41,8 +41,7 @@ class InjectTriples(BaseCommand):
 
         # This needs to go through and create all the nodes with the URI's and literals, then go through
         # and add all of the bnodes after all of the nodes have been inserted.
-        bnode_dictionary = self.create_nodes(injection_dictionary)
-        self.create_bnode_relationships(injection_dictionary, bnode_dictionary)
+        self.create_nodes(injection_dictionary)
 
         logger.info('Finished')
 
