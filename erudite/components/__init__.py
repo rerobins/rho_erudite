@@ -1,1 +1,1 @@
-__author__ = 'rerobins'
+from erudite.components.knowledge_provider import knowledge_provider
