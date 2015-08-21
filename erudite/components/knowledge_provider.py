@@ -4,6 +4,7 @@ Knowledge provider that will respond to requests made by the rdf publisher or an
 from sleekxmpp.plugins.base import base_plugin
 from rhobot.components.storage.client import StoragePayload
 from rdflib.namespace import FOAF
+from rhobot.namespace import RHO
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ class KnowledgeProvider(base_plugin):
     description = 'Knowledge Provider'
     dependencies = {'rho_bot_storage_client', 'rho_bot_rdf_publish', }
 
-    type_requirements = {str(FOAF.Person), 'rho::owner', }
+    type_requirements = {str(FOAF.Person), str(RHO.Owner), }
 
     def plugin_init(self):
         pass
