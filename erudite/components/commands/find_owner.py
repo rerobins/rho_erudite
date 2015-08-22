@@ -31,7 +31,7 @@ class FindOwner(BaseCommand):
 
         results = self.xmpp['rho_bot_storage_client'].find_nodes(storage)
 
-        initial_session['payload'] = results._populate_payload()
+        initial_session['payload'] = results.populate_payload()
         initial_session['next'] = None
         initial_session['has_next'] = False
 
