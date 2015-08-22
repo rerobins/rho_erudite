@@ -35,8 +35,8 @@ class KnowledgeProvider(base_plugin):
 
         if len(intersection) == len(payload.types()):
             results = self.xmpp['rho_bot_storage_client'].find_nodes(payload)
-            if len(results['command']['form'].get_items()):
-                return results['command']['form']
+            if len(results.results()):
+                return results
 
         return None
 

@@ -74,7 +74,7 @@ class InjectTriples(BaseCommand):
                     if value['type'] == 'bnode':
                         storage.add_reference(node_uri, bnode_mappings[value['value']])
 
-            result = self.xmpp['rho_bot_storage_client'].update_node(storage)
+            self.xmpp['rho_bot_storage_client'].update_node(storage)
 
         return bnode_mappings
 
@@ -95,8 +95,8 @@ class InjectTriples(BaseCommand):
 
         result = self.xmpp['rho_bot_storage_client'].create_node(storage)
 
-        logger.info('Retrieved back result: %s %s' % (uri, result))
+        logger.info('Retrieved back result: %s %s' % (uri, result.results()[0].about))
 
-        return result
+        return result.results()[0].about
 
 inject_triples = InjectTriples

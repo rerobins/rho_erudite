@@ -3,6 +3,8 @@ Command that will allow for a user to inject triples into a database.
 """
 from rhobot.components.commands.base_command import BaseCommand
 from rdflib.namespace import FOAF, RDF
+from rhobot.namespace import RHO
+from rhobot.components.storage import ResultPayload, ResultCollectionPayload
 import logging
 
 logger = logging.getLogger(__name__)
@@ -25,17 +27,11 @@ class FindOwner(BaseCommand):
         """
 
         storage = self.xmpp['rho_bot_storage_client'].create_payload()
-        storage.add_type(FOAF.Person, 'rho::owner')
+        storage.add_type(FOAF.Person, RHO.Owner)
 
         results = self.xmpp['rho_bot_storage_client'].find_nodes(storage)
 
-        form = self.xmpp['xep_0004'].make_form()
-        form.add_reported(var='uri', ftype='text-single', label='Result URI')
-
-        for uri in results['command']['form'].get_items():
-            form.add_item(dict(uri=uri[str(RDF.about)]))
-
-        initial_session['payload'] = form
+        initial_session['payload'] = results._populate_payload()
         initial_session['next'] = None
         initial_session['has_next'] = False
 
