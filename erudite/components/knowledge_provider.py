@@ -22,7 +22,7 @@ class KnowledgeProvider(base_plugin):
 
     def post_init(self):
         base_plugin.post_init(self)
-        self.xmpp['rho_bot_rdf_publish'].add_message_handler(self._rdf_request_message)
+        self.xmpp['rho_bot_rdf_publish'].add_request_handler(self._rdf_request_message)
 
     def _rdf_request_message(self, rdf_payload):
         logger.info('Looking up knowledge')
