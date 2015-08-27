@@ -31,11 +31,11 @@ class KnowledgeProvider(base_plugin):
 
         payload = StoragePayload(form)
 
-        intersection = self.type_requirements.intersection(set(payload.types()))
+        intersection = self.type_requirements.intersection(set(payload.types))
 
-        if len(intersection) == len(payload.types()):
+        if len(intersection) == len(payload.types):
             results = self.xmpp['rho_bot_storage_client'].find_nodes(payload)
-            if len(results.results()):
+            if len(results.results):
                 return results
 
         return None

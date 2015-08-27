@@ -2,9 +2,8 @@
 Command that will allow for a user to inject triples into a database.
 """
 from rhobot.components.commands.base_command import BaseCommand
-from rdflib.namespace import FOAF, RDF
+from rdflib.namespace import FOAF
 from rhobot.namespace import RHO
-from rhobot.components.storage import ResultPayload, ResultCollectionPayload
 import logging
 
 logger = logging.getLogger(__name__)
