@@ -15,7 +15,7 @@ class FindOwner(BaseCommand):
 
         logger.info('Initialize Command')
         self._initialize_command(identifier='find_owner', name='Find Owner',
-                                 additional_dependencies={'rho_bot_storage_client'})
+                                 additional_dependencies={'rho_bot_storage_client', 'rho_bot_scheduler', })
 
     def command_start(self, request, initial_session):
         """
@@ -34,6 +34,10 @@ class FindOwner(BaseCommand):
         initial_session['next'] = None
         initial_session['has_next'] = False
 
-        return initial_session
+        promise = self.xmpp['rho_bot_scheduler'].promise()
+
+        promise.resolved(initial_session)
+
+        return promise
 
 find_owner = FindOwner
