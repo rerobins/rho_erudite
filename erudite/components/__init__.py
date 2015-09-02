@@ -1,1 +1,2 @@
 from erudite.components.knowledge_provider import knowledge_provider
+from erudite.components.search_handler import search_handler
