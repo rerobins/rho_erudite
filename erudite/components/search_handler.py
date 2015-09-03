@@ -60,7 +60,7 @@ class SearchHandler(base_plugin):
         for res in result.results:
             print '  %s (%s)' % (res.flags[str(SCHEMA.name)], res.flags['http://degree'])
 
-        return result
+        return result, None
 
 
 search_handler = SearchHandler
