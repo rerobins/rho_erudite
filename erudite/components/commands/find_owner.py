@@ -18,6 +18,13 @@ class FindOwner(BaseCommand):
         self._initialize_command(identifier='find_owner', name='Find Owner',
                                  additional_dependencies={'rho_bot_storage_client', 'rho_bot_scheduler', })
 
+    def post_init(self):
+        """
+        Clean up fetching of dependency plugins.
+        :return:
+        """
+        self._storage_client = self.xmpp['rho_bot_storage_client']
+
     def command_start(self, request, initial_session):
         """
         Provide the configuration details back to the requester and end the command.
@@ -29,7 +36,7 @@ class FindOwner(BaseCommand):
         storage = StoragePayload()
         storage.add_type(FOAF.Person, RHO.Owner)
 
-        promise = self.xmpp['rho_bot_storage_client'].find_nodes(storage)
+        promise = self._storage_client.find_nodes(storage)
 
         def find_nodes_processor(results):
             """
