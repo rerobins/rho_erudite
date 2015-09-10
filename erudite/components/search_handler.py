@@ -9,7 +9,8 @@ import json
 from rhobot.components.storage.enums import CypherFlags
 
 from sleekxmpp.plugins.base import base_plugin
-from rhobot.namespace import WGS_84, SCHEMA, EVENT, LOCATION
+from rhobot.namespace import WGS_84, SCHEMA, EVENT, LOCATION, GRAPH
+from rhobot.components.stanzas.rdf_stanza import RDFStanzaType
 from rhobot.components.storage import StoragePayload
 from rhobot.components.storage.namespace import NEO4J
 
@@ -31,7 +32,11 @@ class SearchHandler(base_plugin):
 
     def post_init(self):
         base_plugin.post_init(self)
-        self.xmpp['rho_bot_rdf_publish'].add_search_handler(self._rdf_request_message)
+
+        self._storage_client = self.xmpp['rho_bot_storage_client']
+        self._rdf_publish = self.xmpp['rho_bot_rdf_publish']
+
+        self._rdf_publish.add_search_handler(self._rdf_request_message)
 
     def _rdf_request_message(self, rdf_payload):
         """
@@ -45,10 +50,9 @@ class SearchHandler(base_plugin):
                                                      str(EVENT.place),
                                                      str(SCHEMA.name))
 
-        translation_key = dict()
-        translation_key.update(json.loads(CypherFlags.TRANSLATION_KEY.default))
+        translation_key = dict(json.loads(CypherFlags.TRANSLATION_KEY.default))
         translation_key[str(SCHEMA.name)] = 'name'
-        translation_key['http://degree'] = 'rels'
+        translation_key[str(GRAPH.degree)] = 'rels'
 
         logger.debug('Executing query: %s' % query)
 
@@ -56,14 +60,24 @@ class SearchHandler(base_plugin):
         payload.add_property(key=NEO4J.cypher, value=query)
         payload.add_flag(CypherFlags.TRANSLATION_KEY, json.dumps(translation_key))
 
-        result = self.xmpp['rho_bot_storage_client'].execute_cypher(payload)
+        promise = self.xmpp['rho_bot_storage_client'].execute_cypher(payload).then(self._handle_results)
 
-        print 'Found: %s results' % len(result.results)
+        return promise
 
-        for res in result.results:
-            print '  %s (%s)' % (res.get_column(str(SCHEMA.name)), res.get_column('http://degree'))
+    def _handle_results(self, result):
+        """
+        Handle all of the results provided by the cypher query.
+        :param result:
+        :return:
+        """
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('Found: %s results' % len(result.results))
 
-        return result, None
+            for res in result.results:
+                logger.debug('  %s (%s)' % (res.get_column(str(SCHEMA.name)), res.get_column(str(GRAPH.degree))))
 
+        rdf_data = self._rdf_publish.create_rdf(mtype=RDFStanzaType.SEARCH_RESPONSE, payload=result)
+
+        return rdf_data
 
 search_handler = SearchHandler
