@@ -9,12 +9,18 @@ parser.add_option('-c', dest="filename", help="Configuration file for the bot", 
 configuration.load_file(options.filename)
 
 bot = RhoBot()
+# Rho bot optional components.
 bot.register_plugin('rho_bot_storage_client', module='rhobot.components')
-bot.register_plugin('inject_triples', module='erudite.components.commands')
-bot.register_plugin('find_owner', module='erudite.components.commands')
 bot.register_plugin('rho_bot_rdf_publish', module='rhobot.components')
+bot.register_plugin('rho_bot_representation_manager', module='rhobot.components')
+
+# Bot specific plugins
 bot.register_plugin('knowledge_provider', module='erudite.components')
 bot.register_plugin('search_handler', module='erudite.components')
+
+# Commands
+bot.register_plugin('inject_triples', module='erudite.components.commands')
+bot.register_plugin('find_owner', module='erudite.components.commands')
 
 # Connect to the XMPP server and start processing XMPP stanzas.
 if bot.connect():
