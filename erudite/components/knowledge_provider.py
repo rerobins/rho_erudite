@@ -29,7 +29,7 @@ class KnowledgeProvider(base_plugin):
         """
         Configure the pointer helpers and add this handler to the request handler of the rdf publisher.
         """
-        base_plugin.post_init(self)
+        super(KnowledgeProvider, self).post_init()
 
         self._storage_client = self.xmpp['rho_bot_storage_client']
         self._rdf_publish = self.xmpp['rho_bot_rdf_publish']
@@ -44,15 +44,11 @@ class KnowledgeProvider(base_plugin):
         """
         logger.debug('Looking up knowledge')
 
-        form = rdf_payload['form']
+        form = rdf_payload.get('form', None)
 
         payload = StoragePayload(form)
 
-        # This will limit the data that this provider will return to requests that are looking for
-        # FOAF.Person and RHO.Owner
-        intersection = self.type_requirements.intersection(set(payload.types))
-
-        if len(intersection) == len(payload.types):
+        if self._process_payload(payload):
             promise = self._storage_client.find_nodes(payload).then(self._process_find_nodes)
         else:
             promise = None
@@ -71,5 +67,14 @@ class KnowledgeProvider(base_plugin):
             return rdf_data
 
         return None
+
+    def _process_payload(self, payload):
+        """
+        Determines whether the payload should be processed or not.
+        :return: boolean
+        """
+        intersection = self.type_requirements.intersection(set(payload.types))
+        return len(intersection) == len(self.type_requirements)
+
 
 knowledge_provider = KnowledgeProvider

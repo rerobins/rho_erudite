@@ -27,12 +27,18 @@ class SearchHandler(base_plugin):
 
     type_requirements = {str(WGS_84.SpatialThing), }
 
+    query = """MATCH (n:`%s`:`%s`)<-[r:`%s`]-(m)
+                   RETURN n AS node, count(r) AS rels, n.`%s` AS name
+                   ORDER BY rels DESC LIMIT 10""" % (str(WGS_84.SpatialThing),
+                                                     str(LOCATION.Address),
+                                                     str(EVENT.place),
+                                                     str(SCHEMA.name))
+
     def plugin_init(self):
         pass
 
     def post_init(self):
-        base_plugin.post_init(self)
-
+        super(SearchHandler, self).post_init()
         self._storage_client = self.xmpp['rho_bot_storage_client']
         self._rdf_publish = self.xmpp['rho_bot_rdf_publish']
 
@@ -43,21 +49,20 @@ class SearchHandler(base_plugin):
         Find node to do work over.
         :return:
         """
-        query = """MATCH (n:`%s`:`%s`)<-[r:`%s`]-(m)
-                   RETURN n AS node, count(r) AS rels, n.`%s` AS name
-                   ORDER BY rels DESC LIMIT 10""" % (str(WGS_84.SpatialThing),
-                                                     str(LOCATION.Address),
-                                                     str(EVENT.place),
-                                                     str(SCHEMA.name))
+        form = rdf_payload.get('form', None)
+        payload = StoragePayload(form)
+
+        if not self._process_payload(payload):
+            return None
 
         translation_key = dict(json.loads(CypherFlags.TRANSLATION_KEY.default))
         translation_key[str(SCHEMA.name)] = 'name'
         translation_key[str(GRAPH.degree)] = 'rels'
 
-        logger.debug('Executing query: %s' % query)
+        logger.debug('Executing query: %s' % self.query)
 
         payload = StoragePayload()
-        payload.add_property(key=NEO4J.cypher, value=query)
+        payload.add_property(key=NEO4J.cypher, value=self.query)
         payload.add_flag(CypherFlags.TRANSLATION_KEY, json.dumps(translation_key))
 
         promise = self.xmpp['rho_bot_storage_client'].execute_cypher(payload).then(self._handle_results)
@@ -79,5 +84,13 @@ class SearchHandler(base_plugin):
         rdf_data = self._rdf_publish.create_rdf(mtype=RDFStanzaType.SEARCH_RESPONSE, payload=result)
 
         return rdf_data
+
+    def _process_payload(self, payload):
+        """
+        Determines whether the payload should be processed or not.
+        :return: boolean
+        """
+        intersection = self.type_requirements.intersection(set(payload.types))
+        return len(intersection) == len(self.type_requirements)
 
 search_handler = SearchHandler

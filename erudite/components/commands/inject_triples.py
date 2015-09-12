@@ -21,7 +21,6 @@ class InjectTriples(BaseCommand):
 
     def post_init(self):
         super(InjectTriples, self).post_init()
-        self._form_plugin = self.xmpp['xep_0004']
         self._storage_client = self.xmpp['rho_bot_storage_client']
         self._scheduler = self.xmpp['rho_bot_scheduler']
         self._representation_manager = self.xmpp['rho_bot_representation_manager']
@@ -33,7 +32,7 @@ class InjectTriples(BaseCommand):
         :param initial_session:
         :return:
         """
-        form = self._form_plugin.make_form()
+        form = self._forms.make_form()
         form.add_field(var='json_data', ftype='text-multi', label='RDF Content (JSON)')
 
         initial_session['payload'] = form
