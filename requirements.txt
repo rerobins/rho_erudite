@@ -1,14 +1,4 @@
-SPARQLWrapper==1.6.4
 coverage==3.7.1
-enum34==1.0.4
-funcsigs==0.4
-html5lib==0.999999
-isodate==0.5.4
 mock==1.3.0
-pbr==1.6.0
-pyparsing==2.0.3
-rdflib==4.2.0
--e git+git@gitlab.local:rho_2105/rhobot.git@77ee1852287c37bc2991709cb1f307a0ec1eaae3#egg=rhobot-master
-six==1.9.0
-sleekxmpp==1.3.1
-wsgiref==0.1.2
+git+http://gitlab.local/rho_2105/rhobot.git#egg=rhobot-1.0.0
+https://github.com/rerobins/SleekXMPP/archive/rhobot.zip#egg=sleekxmpp==1.4.0.dev0
