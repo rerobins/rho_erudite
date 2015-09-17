@@ -11,13 +11,9 @@ logger = logging.getLogger(__name__)
 
 class InjectTriples(BaseCommand):
 
-    def initialize_command(self):
-        super(InjectTriples, self).initialize_command()
-
-        logger.info('Initialize Command')
-        self._initialize_command(identifier='inject_triples', name='Inject Triples',
-                                 additional_dependencies={'rho_bot_storage_client', 'rho_bot_scheduler',
-                                                          'rho_bot_representation_manager', })
+    name = 'inject_triples'
+    description = 'Inject Triples'
+    dependencies = BaseCommand.default_dependencies.union({'rho_bot_storage_client', 'rho_bot_representation_manager'})
 
     def post_init(self):
         super(InjectTriples, self).post_init()

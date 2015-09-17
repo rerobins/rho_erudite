@@ -11,18 +11,16 @@ logger = logging.getLogger(__name__)
 
 class FindOwner(BaseCommand):
 
-    def initialize_command(self):
-        super(FindOwner, self).initialize_command()
-
-        logger.info('Initialize Command')
-        self._initialize_command(identifier='find_owner', name='Find Owner',
-                                 additional_dependencies={'rho_bot_storage_client', 'rho_bot_scheduler', })
+    name = 'find_owner'
+    description = 'Find Owner'
+    dependencies = BaseCommand.default_dependencies.union({'rho_bot_storage_client', })
 
     def post_init(self):
         """
         Clean up fetching of dependency plugins.
         :return:
         """
+        super(FindOwner, self).post_init()
         self._storage_client = self.xmpp['rho_bot_storage_client']
 
     def command_start(self, request, initial_session):
