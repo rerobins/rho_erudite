@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class FindOwner(BaseCommand):
 
     name = 'find_owner'

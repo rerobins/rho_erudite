@@ -42,4 +42,3 @@ def convert_rdf_json_to_storage(definition, store_types=True, store_properties=T
                         logger.error('Couldn\'t find bnode mapping for: %s' % value['value'])
 
     return result
-

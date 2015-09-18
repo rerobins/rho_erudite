@@ -9,6 +9,7 @@ import json
 
 logger = logging.getLogger(__name__)
 
+
 class InjectTriples(BaseCommand):
 
     name = 'inject_triples'
