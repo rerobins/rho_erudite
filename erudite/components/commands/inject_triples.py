@@ -44,7 +44,7 @@ class InjectTriples(BaseCommand):
         :param session: session value.
         :return: updated session value
         """
-        injection_dictionary = json.loads(request['values']['json_data'])
+        injection_dictionary = json.loads(request.get_values()['json_data'])
 
         promise = self._inject_nodes(injection_dictionary).then(lambda s: session)
 
