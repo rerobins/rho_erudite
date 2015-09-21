@@ -1,5 +1,5 @@
 /logging.json
-/erudite.rho
+/configuration
 # Created by .ignore support plugin (hsz.mobi)
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
@@ -109,3 +109,8 @@ docs/_build/
 # PyBuilder
 target/
 
+# Rhobot configuration
+/configuration
+/*.output
+/*.rho
+/*.conf
